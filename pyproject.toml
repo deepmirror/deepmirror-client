@@ -1,0 +1,40 @@
+[project]
+name = "deepmirror"
+version = "0.0.0"
+description = "Command line interface for the deepmirror public API"
+requires-python = ">=3.12"
+
+dependencies = [
+  "click>=8.1.8",             # BSD-3
+  "requests>=2.31.0",         # Apache-2.0
+  "pandas>=2.2.2",            # BSD-3
+  "pydantic>=2.6.3",          # MIT
+  "pydantic-settings>=2.9.1", # MIT
+  "scikit-learn>=1.6.1",      # BSD-3
+  "matplotlib>=3.10.3",       # PSF
+  "tqdm>=4.67.1",             # MPL-2.0
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pre-commit>=3.6.0",
+    "pylint>=3.3.6",
+    "ruff>=0.11.0",
+]
+
+
+[project.scripts]
+dm = "deepmirror.cli:cli"
+
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["deepmirror"]
+
+
+[tool.ruff]
+line-length = 80
+target-version = 'py313'

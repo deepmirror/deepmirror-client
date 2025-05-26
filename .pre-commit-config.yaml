@@ -1,0 +1,38 @@
+default_language_version:
+  python: python3
+  node: system
+repos:
+  - hooks:
+      - id: ruff
+        name: Ruff lint
+      - id: ruff
+        args: ["--fix"]
+        name: Ruff autofix
+      - id: ruff
+        args: ["--select", "I", "--fix"]
+        name: Ruff sort imports
+      - id: ruff-format
+        name: Ruff format
+    repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.0
+  - hooks:
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key
+      - id: trailing-whitespace
+    repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+  - hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+    repo: https://github.com/pycqa/pylint
+    rev: v3.3.6
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        files: '^notebooks/.*\.ipynb$'
