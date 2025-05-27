@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+from typing import Generator
 
 import pytest
 from pydantic import SecretStr
@@ -18,7 +19,7 @@ def csv_path(tmp_path: Path) -> Path:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def setup_auth():
+def setup_auth() -> Generator[None, None, None]:
     """Log in with credentials and save token for testing."""
 
     username = os.environ.get("DM_CLIENT_EMAIL")

@@ -36,3 +36,11 @@ repos:
     hooks:
       - id: nbstripout
         files: '^notebooks/.*\.ipynb$'
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - pydantic>=2.6.3
+          - sqlalchemy
+          - types-requests
