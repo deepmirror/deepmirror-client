@@ -6,13 +6,13 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
-    - name: Install uv and set Python
-      uses: astral-sh/setup-uv@v6
-      with:
-        python-version: "3.12"
-        activate-environment: true
-    - name: Install pre-commit
-      run: uv pip install pre-commit && uv pip install -e ".[dev]"
-    - name: Run pre-commit
-      run: pre-commit run --all-files
+      - uses: actions/checkout@v4
+      - name: Install uv and set Python
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+          activate-environment: true
+      - name: Install pre-commit
+        run: uv pip install pre-commit && uv pip install -e ".[dev]"
+      - name: Run pre-commit
+        run: pre-commit run --all-files

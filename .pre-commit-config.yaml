@@ -6,10 +6,10 @@ repos:
       - id: ruff
         name: Ruff lint
       - id: ruff
-        args: ["--fix"]
+        args: ['--fix']
         name: Ruff autofix
       - id: ruff
-        args: ["--select", "I", "--fix"]
+        args: ['--select', 'I', '--fix']
         name: Ruff sort imports
       - id: ruff-format
         name: Ruff format
