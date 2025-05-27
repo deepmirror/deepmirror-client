@@ -9,6 +9,7 @@ import getpass
 import json
 
 import click
+from pydantic import SecretStr
 
 from . import api
 
@@ -40,9 +41,8 @@ def login(username: str) -> None:
     if not username:
         username = input("Email: ")
     password = getpass.getpass("Password: ")
-
     try:
-        token = api.authenticate(username, password)
+        token = api.authenticate(username, SecretStr(password))
     except RuntimeError as exc:
         raise click.ClickException(str(exc)) from exc
     _save_token(token)

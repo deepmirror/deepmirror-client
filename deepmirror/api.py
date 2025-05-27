@@ -9,6 +9,7 @@ from typing import Any
 
 import pandas as pd
 import requests
+from pydantic import SecretStr
 
 from .config import settings
 
@@ -28,14 +29,14 @@ def load_token() -> str:
     return settings.TOKEN_FILE.read_text().strip()
 
 
-def authenticate(username: str, password: str) -> str:
+def authenticate(username: str, password: SecretStr) -> str:
     """Authenticate with the deepmirror API."""
     host = settings.HOST
     url = f"{host}/api/v3/public/authenticate?token_lifetime_minutes=720"
     data = {
         "grant_type": "password",
         "username": username,
-        "password": password,
+        "password": password.get_secret_value(),
         "scope": "",
         "client_id": "string",
         "client_secret": "string",
@@ -48,6 +49,11 @@ def authenticate(username: str, password: str) -> str:
     if response.status_code != 200:
         raise RuntimeError(f"Login failed: {response.text}")
     return response.json().get("api_token")
+
+
+def login(username: str, password: SecretStr) -> None:
+    """Login to the deepmirror API."""
+    save_token(authenticate(username, password))
 
 
 def list_models() -> Any:

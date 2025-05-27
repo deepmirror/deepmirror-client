@@ -1,0 +1,35 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python package
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    env:
+      DM_CLIENT_EMAIL: ${{ secrets.DM_CLIENT_EMAIL }}
+      DM_CLIENT_PASSWORD: ${{ secrets.DM_CLIENT_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv and set Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          activate-environment: true
+      - name: Sync dependencies
+        run: |
+          uv sync
+          uv pip install pytest
+      - name: Run tests
+        run: uv run pytest
