@@ -14,21 +14,6 @@ from pydantic import SecretStr
 from . import api
 
 
-def _save_token(token: str) -> None:
-    api.save_token(token)
-
-
-def _load_token(token: str | None) -> str:
-    if token:
-        return token
-    try:
-        return api.load_token()
-    except RuntimeError as exc:
-        raise click.UsageError(
-            "API token required. Please login or pass --token"
-        ) from exc
-
-
 @click.group()
 def cli() -> None:
     """Interact with the deepmirror public API."""
@@ -45,7 +30,9 @@ def login(username: str) -> None:
         token = api.authenticate(username, SecretStr(password))
     except RuntimeError as exc:
         raise click.ClickException(str(exc)) from exc
-    _save_token(token)
+    if not token:
+        raise click.ClickException("Login failed")
+    api.save_token(token)
 
 
 @cli.group()

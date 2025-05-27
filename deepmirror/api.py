@@ -14,22 +14,22 @@ from pydantic import SecretStr
 from .config import settings
 
 
-def save_token(token: str) -> None:
+def save_token(token: SecretStr) -> None:
     """Save the API token to the config directory."""
     settings.CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    settings.TOKEN_FILE.write_text(token)
+    settings.TOKEN_FILE.write_text(token.get_secret_value())
     settings.TOKEN_FILE.chmod(0o600)
     print(f"API token saved to {settings.TOKEN_FILE}")
 
 
-def load_token() -> str:
+def load_token() -> SecretStr:
     """Load the API token from the config directory."""
     if not settings.TOKEN_FILE.exists():
         raise RuntimeError("API token not found; please login or provide one")
-    return settings.TOKEN_FILE.read_text().strip()
+    return SecretStr(settings.TOKEN_FILE.read_text().strip())
 
 
-def authenticate(username: str, password: SecretStr) -> str:
+def authenticate(username: str, password: SecretStr) -> SecretStr:
     """Authenticate with the deepmirror API."""
     host = settings.HOST
     url = f"{host}/api/v3/public/authenticate?token_lifetime_minutes=720"
@@ -48,7 +48,10 @@ def authenticate(username: str, password: SecretStr) -> str:
     response = requests.post(url, data=data, headers=headers, timeout=29)
     if response.status_code != 200:
         raise RuntimeError(f"Login failed: {response.text}")
-    return response.json().get("api_token")
+    token = response.json().get("api_token")
+    if token is None:
+        raise RuntimeError("No API token returned")
+    return SecretStr(token)
 
 
 def login(username: str, password: SecretStr) -> None:
@@ -60,7 +63,9 @@ def list_models() -> Any:
     """List all models."""
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/models/"
-    response = requests.post(url, json={"api_token": token}, timeout=29)
+    response = requests.post(
+        url, json={"api_token": token.get_secret_value()}, timeout=29
+    )
     if response.status_code != 200:
         raise RuntimeError(response.text)
     return response.json()
@@ -82,7 +87,7 @@ def train(
     y = df[value_column].astype(float).tolist()
     payload = {
         "model_name": model_name,
-        "api_token": token,
+        "api_token": token.get_secret_value(),
         "x": x,
         "y": y,
         "is_classification": classification,
@@ -101,7 +106,7 @@ def predict_hlm(
     """Predict using HLM."""
     token = load_token()
     payload = {
-        "api_token": token,
+        "api_token": token.get_secret_value(),
         "x": smiles,
     }
 
@@ -120,7 +125,7 @@ def get_predict_hlm(
     token = load_token()
     response = requests.post(
         f"{settings.HOST}/api/v3/public/predict-hlm/{task_id}",
-        json={"api_token": token},
+        json={"api_token": token.get_secret_value()},
         timeout=29,
     )
 
@@ -151,7 +156,11 @@ def predict(
             "Either csv_file & smiles_column or smiles must be provided"
         )
 
-    payload = {"model_name": model_name, "input": inputs, "api_token": token}
+    payload = {
+        "model_name": model_name,
+        "input": inputs,
+        "api_token": token.get_secret_value(),
+    }
     response = requests.post(
         f"{settings.HOST}/api/v3/public/inference/", json=payload, timeout=29
     )
@@ -197,7 +206,7 @@ def structure_predict(
         "protein": protein,
         "ligand": ligand,
         "model": model,
-        "api_token": token,
+        "api_token": token.get_secret_value(),
     }
     response = requests.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/",
@@ -212,7 +221,7 @@ def structure_predict(
 def list_structure_tasks() -> Any:
     """List all structure prediction tasks."""
     token = load_token()
-    payload = {"api_token": token}
+    payload = {"api_token": token.get_secret_value()}
     response = requests.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/get_all_tasks/",
         json=payload,
@@ -235,13 +244,13 @@ def download_structure_prediction(
             "Content-Type": "application/json",
         },
         json={
-            "api_token": token,
+            "api_token": token.get_secret_value(),
         },
         timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
-    return response.content
+    return bytes(response.content)
 
 
 def model_metadata(model_id: str) -> Any:
@@ -249,7 +258,7 @@ def model_metadata(model_id: str) -> Any:
     token = load_token()
     response = requests.post(
         f"{settings.HOST}/api/v3/public/models/metadata/{model_id}",
-        json={"api_token": token},
+        json={"api_token": token.get_secret_value()},
         timeout=29,
     )
     if response.status_code != 200:
@@ -262,7 +271,7 @@ def model_info(model_id: str) -> Any:
     token = load_token()
     response = requests.post(
         f"{settings.HOST}/api/v3/public/models/{model_id}",
-        json={"api_token": token},
+        json={"api_token": token.get_secret_value()},
         timeout=29,
     )
     if response.status_code != 200:

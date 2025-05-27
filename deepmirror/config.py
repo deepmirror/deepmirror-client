@@ -16,12 +16,11 @@ class Settings(BaseSettings):
 
     HOST: str = "https://api.app.deepmirror.ai"
 
-    if os.name == "nt":
-        BASE_DIR: Path = Path(os.getenv("APPDATA", str(Path.home()))) / "Local"
-    else:
-        BASE_DIR: Path = Path(
-            os.getenv("XDG_CONFIG_HOME", str(Path.home() / ".config"))
-        )
+    BASE_DIR: Path = (
+        Path(os.getenv("APPDATA", str(Path.home()))) / "Local"
+        if os.name == "nt"
+        else Path(os.getenv("XDG_CONFIG_HOME", str(Path.home() / ".config")))
+    )
 
     CONFIG_DIR: Path = BASE_DIR / "deepmirror"
     TOKEN_FILE: Path = CONFIG_DIR / "token"
