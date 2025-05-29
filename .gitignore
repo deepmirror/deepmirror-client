@@ -1,5 +1,7 @@
 # DS Stroe
 .DS_Store
+*.zip
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

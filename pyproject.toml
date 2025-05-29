@@ -15,6 +15,7 @@ dependencies = [
   "tqdm>=4.67.1",                    # MPL-2.0
   "ipykernel>=6.29.5",               # BSD-3
   "types-requests==2.32.0.20250515", # Apache-2.0
+  "nglview>=3.1.4",                  # MIT
 ]
 
 [project.optional-dependencies]
