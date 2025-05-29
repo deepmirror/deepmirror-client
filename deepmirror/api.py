@@ -196,9 +196,10 @@ def predict(
 
 
 def structure_prediction(
-    chains: list[dict],
-    constraint_settings: dict | None = None,
+    chains: list[dict[str, str]],
+    constraint_settings: dict[str, str | float | int] | None = None,
 ) -> Any:
+    """Create structure prediction"""
     token = load_token()
     response = requests.post(
         f"{settings.HOST}/api/v3/public/structure-prediction/v2/",
@@ -219,6 +220,7 @@ def structure_prediction(
 
 
 def get_structure_prediction(task_id: str) -> Any:
+    """Get structure prediction"""
     token = load_token()
     response = requests.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/{task_id}",
