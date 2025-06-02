@@ -139,19 +139,6 @@ def structure() -> None:
     """Structure prediction operations."""
 
 
-@structure.command("predict")
-@click.argument("protein")
-@click.argument("ligand")
-@click.option("--model-name", default="chai", show_default=True)
-def structure_predict(protein: str, ligand: str, model_name: str) -> None:
-    """Submit a structure prediction job."""
-    try:
-        data = api.structure_predict(protein, ligand, model_name)
-    except RuntimeError as exc:
-        raise click.ClickException(str(exc)) from exc
-    click.echo(json.dumps(data, indent=2))
-
-
 @structure.command("list")
 def structure_list() -> None:
     """List submitted structure prediction tasks."""

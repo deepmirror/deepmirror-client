@@ -195,22 +195,42 @@ def predict(
     return predictions
 
 
-def structure_predict(
-    protein: str,
-    ligand: str,
-    model: str,
+def structure_prediction(
+    chains: list[dict[str, str]],
+    constraint_settings: dict[str, str | float | int] | None = None,
 ) -> Any:
-    """Predict a structure."""
+    """Create structure prediction"""
     token = load_token()
-    payload = {
-        "protein": protein,
-        "ligand": ligand,
-        "model": model,
-        "api_token": token.get_secret_value(),
-    }
     response = requests.post(
-        f"{settings.HOST}/api/v3/public/structure_prediction/",
-        json=payload,
+        f"{settings.HOST}/api/v3/public/structure-prediction/v2/",
+        headers={
+            "accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        json={
+            "chains": chains,
+            "api_token": token.get_secret_value(),
+            "settings": constraint_settings,
+        },
+        timeout=29,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(response.text)
+    return response.json()
+
+
+def get_structure_prediction(task_id: str) -> Any:
+    """Get structure prediction"""
+    token = load_token()
+    response = requests.post(
+        f"{settings.HOST}/api/v3/public/structure_prediction/{task_id}",
+        headers={
+            "accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        json={
+            "api_token": token.get_secret_value(),
+        },
         timeout=29,
     )
     if response.status_code != 200:
