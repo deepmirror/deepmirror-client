@@ -2,17 +2,15 @@
 
 `deepmirror` is a command-line interface for interacting with the [deepmirror API](https://api.app.deepmirror.ai/public/docs). It allows you to train models, run predictions, and submit structure prediction jobs directly from your terminal.
 
----
 
-## 🚀 Installation
+## Installation
 
 ```bash
 pip install deepmirror
 ```
 
----
 
-## 🔐 Authentication
+## Authentication
 
 Before using most commands, you need to log in to get your API token:
 
@@ -22,31 +20,29 @@ dm login EMAIL
 
 This saves your token and host in `~/.config/deepmirror/` for reuse.
 
----
 
-## 🧠 Model Commands
+## Model Commands
 
-### 📋 List Available Models
+### List Available Models
 
 ```bash
 dm model list
 ```
 
-### 📄 View Model Metadata
+### View Model Metadata
 
 ```bash
 dm model metadata MODEL_ID
 ```
 
-### 🔎 Get Full Model Info
+### Get Full Model Info
 
 ```bash
 dm model info MODEL_ID
 ```
 
----
 
-## 🏋️ Train a Custom Model
+## Train a Custom Model
 
 ```bash
 dm train --model-name mymodel \
@@ -59,9 +55,8 @@ dm train --model-name mymodel \
 - `--classification` enables classification mode.
 - Default SMILES column is `smiles`, target column is `target`.
 
----
 
-## 🔮 Run Inference
+## Run Inference
 
 You can run inference using either a CSV file or direct SMILES input:
 
@@ -73,42 +68,17 @@ dm predict --model-name mymodel --csv-file inputs.csv
 dm predict --model-name mymodel --smiles "CCO"
 ```
 
----
 
-## 🧬 Structure Prediction
+## Co-folding and Affinity Predictions
 
-### 🧠 Predict Protein-Ligand Structure
+Explore co-folding capabilities using the following notebooks:
 
-```bash
-dm structure predict protein.pdb ligand.sdf --model chai
-```
+- **[Predict 3D structures](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Predict_Structure.ipynb)** of protein–ligand complexes via co-folding [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Predict_Structure.ipynb)
 
-- Default model is `chai`.
-- Protein and ligand must be valid file paths.
+- **[Apply constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)** during co-folding to guide the predicted structure  [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)
 
-### 📦 Download Prediction Result
+- **[Estimate binding affinity values](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)** alongside structural prediction using Boltz-2 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)
 
-```bash
-dm structure download TASK_ID result.zip
-```
-
-### 📃 List Submitted Jobs
-
-```bash
-dm structure list
-```
-
----
-
-## ⚙️ Configuration
-
-- API host and token are saved under `~/.config/deepmirror/`.
-- You can override the API host:
-
-  - via `--host` option on any command
-  - or by setting `DEEPMIRROR_API_ENV=local`
-
----
 
 ## 💡 Tips
 

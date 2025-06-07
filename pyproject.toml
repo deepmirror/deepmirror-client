@@ -1,8 +1,8 @@
 [project]
 name = "deepmirror"
-version = "0.0.3"
+version = "0.0.4"
 description = "Command line interface for the deepmirror public API"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 readme = "README.md"
 
 authors = [{ name = "Ryan Greenhalgh", email = "ryan@deepmirror.ai" }]
