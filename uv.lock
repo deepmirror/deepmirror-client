@@ -352,7 +352,7 @@ wheels = [
 
 [[package]]
 name = "deepmirror"
-version = "0.0.1"
+version = "0.0.3"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -360,6 +360,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "nglview" },
     { name = "pandas" },
+    { name = "py3dmol" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "requests" },
@@ -386,6 +387,7 @@ requires-dist = [
     { name = "nglview", specifier = ">=3.1.4" },
     { name = "pandas", specifier = ">=2.2.2" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.6.0" },
+    { name = "py3dmol", specifier = ">=2.5.0" },
     { name = "pydantic", specifier = ">=2.11.5" },
     { name = "pydantic-settings", specifier = ">=2.9.1" },
     { name = "pylint", marker = "extra == 'dev'", specifier = ">=3.3.6" },
@@ -1449,6 +1451,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/cd/05/0a34433a064256a578f1783a10da6df098ceaa4a57bbeaa96a6c0352786b/pure_eval-0.2.3.tar.gz", hash = "sha256:5f4e983f40564c576c7c8635ae88db5956bb2229d7e9237d03b3c0b0190eaf42", size = 19752, upload-time = "2024-07-21T12:58:21.801Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl", hash = "sha256:1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0", size = 11842, upload-time = "2024-07-21T12:58:20.04Z" },
+]
+
+[[package]]
+name = "py3dmol"
+version = "2.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/01/3fb3be3a054614fe505fe362f975607bbec99de6b8aedfd66e9038e7d401/py3dmol-2.5.0.tar.gz", hash = "sha256:a6d424f98de652e0e8e3e8bbf298e267d613060f14c317e2ffb94f46a3c7f766", size = 7821, upload-time = "2025-06-03T19:46:47.915Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/56/e830ccd2a387d03c24c760e93f2a3d54bb7b40bd502e7e84d8ea8eee48f7/py3dmol-2.5.0-py2.py3-none-any.whl", hash = "sha256:82724b2e509557a4c825a26064ffacebb24a551bca17f8903e7dbb7fa42c260e", size = 7155, upload-time = "2025-06-03T19:46:46.666Z" },
 ]
 
 [[package]]
