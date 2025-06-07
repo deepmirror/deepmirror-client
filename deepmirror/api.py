@@ -5,7 +5,7 @@ using the deepmirror API. It handles API token management and provides a clean
 interface for making API requests.
 """
 
-from typing import Any
+from typing import Any, Literal
 
 import pandas as pd
 import requests
@@ -198,6 +198,7 @@ def predict(
 def structure_prediction(
     chains: list[dict[str, str]],
     constraint_settings: dict[str, str | float | int] | None = None,
+    model: Literal["chai", "boltz", "boltz2"] = "chai",
 ) -> Any:
     """Create structure prediction"""
     token = load_token()
@@ -209,6 +210,7 @@ def structure_prediction(
         },
         json={
             "chains": chains,
+            "model": model,
             "api_token": token.get_secret_value(),
             "settings": constraint_settings,
         },
