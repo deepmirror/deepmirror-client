@@ -5,6 +5,7 @@ using the deepmirror API. It handles API token management and provides a clean
 interface for making API requests.
 """
 
+from pathlib import Path
 from typing import Any, Literal
 
 import pandas as pd
@@ -296,6 +297,34 @@ def model_info(model_id: str) -> Any:
         json={"api_token": token.get_secret_value()},
         timeout=29,
     )
+    if response.status_code != 200:
+        raise RuntimeError(response.text)
+    return response.json()
+
+
+def upload_onnx_model(
+    onnx_file: str,
+) -> Any:
+    """Upload an ONNX model to the deepmirror API."""
+    token = load_token()
+    with open(onnx_file, "rb") as f:
+        file_content = f.read()
+
+    response = requests.post(
+        f"{settings.HOST}/api/v3/public/onnx-model/upload/",
+        headers={
+            "X-API-Key": token.get_secret_value(),
+        },
+        files={
+            "file": (
+                Path(onnx_file).name,
+                file_content,
+                "application/octet-stream",
+            )
+        },
+        timeout=29,
+    )
+
     if response.status_code != 200:
         raise RuntimeError(response.text)
     return response.json()
