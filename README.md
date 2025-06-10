@@ -2,13 +2,11 @@
 
 `deepmirror` is a command-line interface for interacting with the [deepmirror API](https://api.app.deepmirror.ai/public/docs). It allows you to train models, run predictions, and submit structure prediction jobs directly from your terminal.
 
-
 ## Installation
 
 ```bash
 pip install deepmirror
 ```
-
 
 ## Authentication
 
@@ -19,7 +17,6 @@ dm login EMAIL
 ```
 
 This saves your token and host in `~/.config/deepmirror/` for reuse.
-
 
 ## Model Commands
 
@@ -41,7 +38,6 @@ dm model metadata MODEL_ID
 dm model info MODEL_ID
 ```
 
-
 ## Train a Custom Model
 
 ```bash
@@ -55,7 +51,6 @@ dm train --model-name mymodel \
 - `--classification` enables classification mode.
 - Default SMILES column is `smiles`, target column is `target`.
 
-
 ## Run Inference
 
 You can run inference using either a CSV file or direct SMILES input:
@@ -68,17 +63,15 @@ dm predict --model-name mymodel --csv-file inputs.csv
 dm predict --model-name mymodel --smiles "CCO"
 ```
 
-
 ## Co-folding and Affinity Predictions
 
 Explore co-folding capabilities using the following notebooks:
 
 - **[Predict 3D structures](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Predict_Structure.ipynb)** of protein–ligand complexes via co-folding [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Predict_Structure.ipynb)
 
-- **[Apply constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)** during co-folding to guide the predicted structure  [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)
+- **[Apply constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)** during co-folding to guide the predicted structure [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)
 
 - **[Estimate binding affinity values](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)** alongside structural prediction using Boltz-2 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)
-
 
 ## 💡 Tips
 

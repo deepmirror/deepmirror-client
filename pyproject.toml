@@ -1,6 +1,6 @@
 [project]
 name = "deepmirror"
-version = "0.0.4"
+version = "0.0.5"
 description = "Command line interface for the deepmirror public API"
 requires-python = ">=3.10"
 readme = "README.md"
@@ -21,6 +21,7 @@ dependencies = [
   "ipykernel>=6.29.5",               # BSD-3
   "types-requests==2.32.0.20250515", # Apache-2.0
   "py3Dmol>=2.5.0",                  # BSD-3
+  "onnx>=1.18.0",        # MIT License
 ]
 
 [project.optional-dependencies]
