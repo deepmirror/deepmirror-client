@@ -46,9 +46,7 @@ def authenticate(username: str, password: SecretStr) -> SecretStr:
         "accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
     }
-    response = requests.post(
-        url, data=data, headers=headers, timeout=settings.API_TIMEOUT
-    )
+    response = requests.post(url, data=data, headers=headers, timeout=29)
     if response.status_code != 200:
         raise RuntimeError(f"Login failed: {response.text}")
     token = response.json().get("api_token")
@@ -67,9 +65,7 @@ def list_models() -> Any:
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/models/"
     response = requests.post(
-        url,
-        json={"api_token": token.get_secret_value()},
-        timeout=settings.API_TIMEOUT,
+        url, json={"api_token": token.get_secret_value()}, timeout=29
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -98,9 +94,7 @@ def train(
         "is_classification": classification,
     }
     response = requests.post(
-        f"{settings.HOST}/api/v3/public/train/",
-        json=payload,
-        timeout=settings.API_TIMEOUT,
+        f"{settings.HOST}/api/v3/public/train/", json=payload, timeout=29
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -118,9 +112,7 @@ def predict_hlm(
     }
 
     response = requests.post(
-        f"{settings.HOST}/api/v3/public/predict-hlm/",
-        json=payload,
-        timeout=settings.API_TIMEOUT,
+        f"{settings.HOST}/api/v3/public/predict-hlm/", json=payload, timeout=29
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -135,7 +127,7 @@ def get_predict_hlm(
     response = requests.post(
         f"{settings.HOST}/api/v3/public/predict-hlm/{task_id}",
         json={"api_token": token.get_secret_value()},
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
 
     if response.status_code not in [200, 202]:
@@ -171,9 +163,7 @@ def predict(
         "api_token": token.get_secret_value(),
     }
     response = requests.post(
-        f"{settings.HOST}/api/v3/public/inference/",
-        json=payload,
-        timeout=settings.API_TIMEOUT,
+        f"{settings.HOST}/api/v3/public/inference/", json=payload, timeout=29
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -225,7 +215,7 @@ def structure_prediction(
             "api_token": token.get_secret_value(),
             "settings": constraint_settings,
         },
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -244,7 +234,7 @@ def get_structure_prediction(task_id: str) -> Any:
         json={
             "api_token": token.get_secret_value(),
         },
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -258,7 +248,7 @@ def list_structure_tasks() -> Any:
     response = requests.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/get_all_tasks/",
         json=payload,
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -279,7 +269,7 @@ def download_structure_prediction(
         json={
             "api_token": token.get_secret_value(),
         },
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -292,7 +282,7 @@ def model_metadata(model_id: str) -> Any:
     response = requests.post(
         f"{settings.HOST}/api/v3/public/models/metadata/{model_id}",
         json={"api_token": token.get_secret_value()},
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -305,7 +295,7 @@ def model_info(model_id: str) -> Any:
     response = requests.post(
         f"{settings.HOST}/api/v3/public/models/{model_id}",
         json={"api_token": token.get_secret_value()},
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
@@ -320,21 +310,19 @@ def upload_onnx_model(
     with open(onnx_file, "rb") as f:
         file_content = f.read()
 
-    file = (
-        Path(onnx_file).name,
-        file_content,
-        "application/octet-stream",
-    )
-
     response = requests.post(
         f"{settings.HOST}/api/v3/public/onnx-model/upload/",
         headers={
             "X-API-Key": token.get_secret_value(),
         },
         files={
-            "file": file,
+            "file": (
+                Path(onnx_file).name,
+                file_content,
+                "application/octet-stream",
+            )
         },
-        timeout=settings.API_TIMEOUT,
+        timeout=29,
     )
 
     if response.status_code != 200:

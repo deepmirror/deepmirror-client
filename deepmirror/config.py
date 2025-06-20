@@ -25,7 +25,6 @@ class Settings(BaseSettings):
     CONFIG_DIR: Path = BASE_DIR / "deepmirror"
     TOKEN_FILE: Path = CONFIG_DIR / "token"
     HOST_FILE: Path = CONFIG_DIR / "host"
-    API_TIMEOUT: int = 29
 
 
 settings = Settings()
