@@ -22,6 +22,7 @@ dependencies = [
   "types-requests==2.32.4.20250611", # Apache-2.0
   "py3Dmol>=2.5.0",                  # BSD-3
   "onnx>=1.18.0",                    # MIT License
+  "rdkit==2025.03.3",                # BSD-3
 ]
 
 [project.optional-dependencies]
