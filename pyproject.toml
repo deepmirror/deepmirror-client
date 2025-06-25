@@ -19,18 +19,19 @@ dependencies = [
   "matplotlib>=3.10.3",              # PSF
   "tqdm>=4.67.1",                    # MPL-2.0
   "ipykernel>=6.29.5",               # BSD-3
-  "types-requests==2.32.0.20250515", # Apache-2.0
+  "types-requests==2.32.4.20250611", # Apache-2.0
   "py3Dmol>=2.5.0",                  # BSD-3
-  "onnx>=1.18.0",        # MIT License
+  "onnx>=1.18.0",                    # MIT License
+  "rdkit==2025.03.3",                # BSD-3
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0.0",
   "pre-commit>=3.6.0",
-  "pylint>=3.3.6",
-  "ruff>=0.11.0",
-  "mypy==1.15.0",
+  "pylint>=3.3.7",
+  "ruff>=0.11.13",
+  "mypy==1.16.1",
 ]
 
 [project.urls]
