@@ -76,6 +76,38 @@ def list_models() -> Any:
     return response.json()
 
 
+def deregister_model(model_id: str) -> Any:
+    """Deregister a model."""
+    token = load_token()
+    url = f"{settings.HOST}/api/v3/public/models/deregister_model/"
+    response = requests.post(
+        url,
+        json={"api_token": token.get_secret_value(), "model_id": model_id},
+        timeout=settings.API_TIMEOUT,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(response.text)
+    return response.json()
+
+
+def rename_model(model_id: str, model_name: str) -> Any:
+    """Rename a model."""
+    token = load_token()
+    url = f"{settings.HOST}/api/v3/public/models/rename_model/"
+    response = requests.post(
+        url,
+        json={
+            "api_token": token.get_secret_value(),
+            "model_id": model_id,
+            "model_name": model_name,
+        },
+        timeout=settings.API_TIMEOUT,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(response.text)
+    return response.json()
+
+
 def train(
     model_name: str,
     csv_file: str,
