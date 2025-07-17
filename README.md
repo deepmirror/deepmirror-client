@@ -73,6 +73,8 @@ Explore co-folding capabilities using the following notebooks:
 
 - **[Estimate binding affinity values](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)** alongside structural prediction using Boltz-2 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)
 
+- **[Apply Covalent Bond Constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Chai1_bond_constraints.ipynb)** to guide co-folding of covalent ligands in Chai-1 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Chai1_bond_constraints.ipynb)
+
 ## 💡 Tips
 
 - If a token is missing or expired, commands will prompt you to log in again.
