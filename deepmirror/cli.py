@@ -135,6 +135,48 @@ def predict(
 
 
 @cli.group()
+def batch() -> None:
+    """Batch inference operations."""
+
+
+@batch.command("create")
+@click.argument("model_id")
+@click.argument("file_path", type=click.Path(exists=True))
+def batch_create(model_id: str, file_path: str) -> None:
+    """Submit a Parquet file for batch inference."""
+    try:
+        data = api.create_batch_inference(model_id, file_path)
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(data, indent=2))
+
+
+@batch.command("status")
+@click.argument("task_id")
+def batch_status(task_id: str) -> None:
+    """Check the status of a batch inference job."""
+    try:
+        data = api.get_batch_inference(task_id)
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(data, indent=2))
+
+
+@batch.command("download")
+@click.argument("task_id")
+@click.argument("output_file", type=click.Path())
+def batch_download(task_id: str, output_file: str) -> None:
+    """Download results of a completed batch inference job."""
+    try:
+        data = api.download_batch_results(task_id)
+        with open(output_file, "wb") as f:
+            f.write(data)
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"Downloaded batch results to {output_file}")
+
+
+@cli.group()
 def structure() -> None:
     """Structure prediction operations."""
 

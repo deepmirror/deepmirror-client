@@ -63,6 +63,21 @@ dm predict --model-name mymodel --csv-file inputs.csv
 dm predict --model-name mymodel --smiles "CCO"
 ```
 
+## Batch Inference
+
+Upload a Parquet file for large-scale predictions:
+
+```bash
+dm batch create MODEL_ID path/to/input.parquet
+```
+
+Check job status and download results once completed:
+
+```bash
+dm batch status TASK_ID
+dm batch download TASK_ID predictions.parquet
+```
+
 ## Co-folding and Affinity Predictions
 
 Explore co-folding capabilities using the following notebooks:
