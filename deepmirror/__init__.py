@@ -2,7 +2,10 @@
 
 from .api import (
     authenticate,
+    create_batch_inference,
+    download_batch_results,
     download_structure_prediction,
+    get_batch_inference,
     get_predict_hlm,
     get_structure_prediction,
     list_models,
@@ -26,6 +29,9 @@ __all__ = [
     "download_structure_prediction",
     "structure_prediction",
     "get_structure_prediction",
+    "create_batch_inference",
+    "get_batch_inference",
+    "download_batch_results",
     "train",
     "login",
     "model_metadata",

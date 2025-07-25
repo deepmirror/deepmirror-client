@@ -5,14 +5,32 @@ using the deepmirror API. It handles API token management and provides a clean
 interface for making API requests.
 """
 
-from pathlib import Path
-from typing import Any, Literal
+try:
+    from enum import StrEnum
+except ImportError:
+    from strenum import (
+        StrEnum as _StrEnum,  # added for python 3.10 compatibility
+    )
 
+    StrEnum = _StrEnum  # type: ignore[misc]
+
+from pathlib import Path
+from typing import Any
+
+import httpx
 import pandas as pd
-import requests
 from pydantic import SecretStr
 
 from .config import settings
+from .utils import create_upload_files, download_stream
+
+
+class StructureModel(StrEnum):
+    """Avaialbe structure models"""
+
+    CHAI = "chai"
+    BOLTZ = "boltz"
+    BOLTZ2 = "boltz2"
 
 
 def save_token(token: SecretStr) -> None:
@@ -46,7 +64,7 @@ def authenticate(username: str, password: SecretStr) -> SecretStr:
         "accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
     }
-    response = requests.post(
+    response = httpx.post(
         url, data=data, headers=headers, timeout=settings.API_TIMEOUT
     )
     if response.status_code != 200:
@@ -66,7 +84,7 @@ def list_models() -> Any:
     """List all models."""
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/models/"
-    response = requests.post(
+    response = httpx.post(
         url,
         json={"api_token": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
@@ -80,7 +98,7 @@ def deregister_model(model_id: str) -> Any:
     """Deregister a model."""
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/models/deregister_model/"
-    response = requests.post(
+    response = httpx.post(
         url,
         json={"api_token": token.get_secret_value(), "model_id": model_id},
         timeout=settings.API_TIMEOUT,
@@ -94,7 +112,7 @@ def rename_model(model_id: str, model_name: str) -> Any:
     """Rename a model."""
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/models/rename_model/"
-    response = requests.post(
+    response = httpx.post(
         url,
         json={
             "api_token": token.get_secret_value(),
@@ -129,7 +147,7 @@ def train(
         "y": y,
         "is_classification": classification,
     }
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/train/",
         json=payload,
         timeout=settings.API_TIMEOUT,
@@ -149,7 +167,7 @@ def predict_hlm(
         "x": smiles,
     }
 
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/predict-hlm/",
         json=payload,
         timeout=settings.API_TIMEOUT,
@@ -164,7 +182,7 @@ def get_predict_hlm(
 ) -> Any:
     """Get predictions from HLM."""
     token = load_token()
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/predict-hlm/{task_id}",
         json={"api_token": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
@@ -202,7 +220,7 @@ def predict(
         "input": inputs,
         "api_token": token.get_secret_value(),
     }
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/inference/",
         json=payload,
         timeout=settings.API_TIMEOUT,
@@ -241,11 +259,11 @@ def predict(
 def structure_prediction(
     chains: list[dict[str, str]],
     constraint_settings: dict[str, str | float | int] | None = None,
-    model: Literal["chai", "boltz", "boltz2"] = "chai",
+    model: StructureModel = StructureModel.CHAI,
 ) -> Any:
     """Create structure prediction"""
     token = load_token()
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/structure-prediction/v2/",
         headers={
             "accept": "application/json",
@@ -267,7 +285,7 @@ def structure_prediction(
 def get_structure_prediction(task_id: str) -> Any:
     """Get structure prediction"""
     token = load_token()
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/{task_id}",
         headers={
             "accept": "application/json",
@@ -287,7 +305,7 @@ def list_structure_tasks() -> Any:
     """List all structure prediction tasks."""
     token = load_token()
     payload = {"api_token": token.get_secret_value()}
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/get_all_tasks/",
         json=payload,
         timeout=settings.API_TIMEOUT,
@@ -302,7 +320,7 @@ def download_structure_prediction(
 ) -> bytes:
     """Download a structure prediction task."""
     token = load_token()
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/download/{task_id}",
         headers={
             "accept": "application/json",
@@ -321,7 +339,7 @@ def download_structure_prediction(
 def model_metadata(model_id: str) -> Any:
     """Get metadata for a specific model."""
     token = load_token()
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/models/metadata/{model_id}",
         json={"api_token": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
@@ -334,7 +352,7 @@ def model_metadata(model_id: str) -> Any:
 def model_info(model_id: str) -> Any:
     """Get detailed information for a specific model."""
     token = load_token()
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/models/{model_id}",
         json={"api_token": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
@@ -358,7 +376,7 @@ def upload_onnx_model(
         "application/octet-stream",
     )
 
-    response = requests.post(
+    response = httpx.post(
         f"{settings.HOST}/api/v3/public/onnx-model/upload/",
         headers={
             "X-API-Key": token.get_secret_value(),
@@ -372,3 +390,50 @@ def upload_onnx_model(
     if response.status_code != 200:
         raise RuntimeError(response.text)
     return response.json()
+
+
+def create_batch_inference(model_id: str, file_path: str) -> Any:
+    """Upload a file and start a batch inference job."""
+    token = load_token()
+    url = f"{settings.HOST}/api/v3/public/batch-inference/{model_id}"
+    headers = {"X-API-Key": token.get_secret_value()}
+    with open(file_path, "rb") as file_obj:
+        files = create_upload_files(file_path, file_obj)
+        response = httpx.post(
+            url,
+            headers=headers,
+            files={"file": files},
+            timeout=settings.API_TIMEOUT,
+        )
+    if response.status_code != 200:
+        raise RuntimeError(response.text)
+    return response.json()
+
+
+def get_batch_inference(task_id: str) -> Any:
+    """Retrieve the status of a batch inference job."""
+    token = load_token()
+    url = f"{settings.HOST}/api/v3/public/batch-inference/{task_id}"
+    response = httpx.get(
+        url,
+        headers={"X-API-Key": token.get_secret_value()},
+        timeout=settings.API_TIMEOUT,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(response.text)
+    return response.json()
+
+
+def download_batch_results(task_id: str) -> bytes:
+    """Download predictions for a completed batch inference job."""
+    token = load_token()
+    url = f"{settings.HOST}/api/v3/public/batch-inference/{task_id}/download"
+    with httpx.stream(
+        "GET",
+        url,
+        headers={"X-API-Key": token.get_secret_value()},
+        timeout=settings.API_TIMEOUT,
+    ) as response:
+        if response.status_code != 200:
+            raise RuntimeError(response.text)
+        return download_stream(response)

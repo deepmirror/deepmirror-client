@@ -1,6 +1,6 @@
 [project]
 name = "deepmirror"
-version = "0.0.6"
+version = "0.0.7"
 description = "Command line interface for the deepmirror public API"
 requires-python = ">=3.10"
 readme = "README.md"
@@ -12,6 +12,7 @@ maintainers = [{ name = "Ryan Greenhalgh", email = "ryan@deepmirror.ai" }]
 dependencies = [
   "click>=8.1.8",                    # BSD-3
   "requests>=2.31.0",                # Apache-2.0
+  "httpx==0.28.1",                   # MIT
   "pandas>=2.2.2",                   # BSD-3
   "pydantic>=2.11.5",                # MIT
   "pydantic-settings>=2.9.1",        # MIT
@@ -23,6 +24,7 @@ dependencies = [
   "py3Dmol>=2.5.0",                  # BSD-3
   "onnx>=1.18.0",                    # MIT License
   "rdkit==2025.03.3",                # BSD-3
+  "strenum>=0.4.15; python_version < '3.11'"
 ]
 
 [project.optional-dependencies]
@@ -32,6 +34,8 @@ dev = [
   "pylint>=3.3.7",
   "ruff>=0.11.13",
   "mypy==1.16.1",
+  "types-tqdm==4.67.0.20250516",
+  "pandas-stubs==2.3.0.250703",
 ]
 
 [project.urls]
