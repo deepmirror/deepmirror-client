@@ -11,7 +11,7 @@ from deepmirror import api
 def test_train_valid_columns(csv_path: Path) -> None:  # pylint: disable=redefined-outer-name
     """Test training with valid columns."""
     csv_path.write_text("smiles,value\nCCO,1\n")
-    with mock.patch("deepmirror.api.requests.post") as mock_post:
+    with mock.patch("deepmirror.api.httpx.post") as mock_post:
         mock_post.return_value.status_code = 200
         mock_post.return_value.json.return_value = {"ok": True}
         result = api.train(
