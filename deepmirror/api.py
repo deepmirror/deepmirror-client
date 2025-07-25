@@ -5,7 +5,15 @@ using the deepmirror API. It handles API token management and provides a clean
 interface for making API requests.
 """
 
-from enum import StrEnum
+try:
+    from enum import StrEnum
+except ImportError:
+    from strenum import (
+        StrEnum as _StrEnum,  # added for python 3.10 compatibility
+    )
+
+    StrEnum = _StrEnum  # type: ignore[misc]
+
 from pathlib import Path
 from typing import Any
 
