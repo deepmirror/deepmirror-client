@@ -24,6 +24,7 @@ dependencies = [
   "py3Dmol>=2.5.0",                  # BSD-3
   "onnx>=1.18.0",                    # MIT License
   "rdkit==2025.03.3",                # BSD-3
+  "strenum>=0.4.15; python_version < '3.11'"
 ]
 
 [project.optional-dependencies]
