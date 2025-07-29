@@ -98,3 +98,7 @@ Explore co-folding capabilities using the following notebooks:
   ```bash
   dm train --help
   ```
+
+## Automatic PyPI Releases
+
+When the version in `pyproject.toml` is updated on the `main` branch, the [publish.yml](.github/workflows/publish.yml) workflow builds the package, publishes it to PyPI, tags the commit and creates a GitHub release. Ensure the repository secret `PYPI_API_TOKEN` is configured for uploads to succeed.
