@@ -86,7 +86,7 @@ def list_models() -> Any:
     url = f"{settings.HOST}/api/v3/public/models/"
     response = httpx.post(
         url,
-        json={"api_token": token.get_secret_value()},
+        headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
@@ -100,7 +100,8 @@ def deregister_model(model_id: str) -> Any:
     url = f"{settings.HOST}/api/v3/public/models/deregister_model/"
     response = httpx.post(
         url,
-        json={"api_token": token.get_secret_value(), "model_id": model_id},
+        headers={"X-API-Key": token.get_secret_value()},
+        json={"model_id": model_id},
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
@@ -114,8 +115,8 @@ def rename_model(model_id: str, model_name: str) -> Any:
     url = f"{settings.HOST}/api/v3/public/models/rename_model/"
     response = httpx.post(
         url,
+        headers={"X-API-Key": token.get_secret_value()},
         json={
-            "api_token": token.get_secret_value(),
             "model_id": model_id,
             "model_name": model_name,
         },
@@ -142,13 +143,13 @@ def train(
     y = df[value_column].astype(float).tolist()
     payload = {
         "model_name": model_name,
-        "api_token": token.get_secret_value(),
         "x": x,
         "y": y,
         "is_classification": classification,
     }
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/train/",
+        headers={"X-API-Key": token.get_secret_value()},
         json=payload,
         timeout=settings.API_TIMEOUT,
     )
@@ -162,13 +163,11 @@ def predict_hlm(
 ) -> Any:
     """Predict using HLM."""
     token = load_token()
-    payload = {
-        "api_token": token.get_secret_value(),
-        "x": smiles,
-    }
+    payload = {"x": smiles}
 
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/predict-hlm/",
+        headers={"X-API-Key": token.get_secret_value()},
         json=payload,
         timeout=settings.API_TIMEOUT,
     )
@@ -184,7 +183,7 @@ def get_predict_hlm(
     token = load_token()
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/predict-hlm/{task_id}",
-        json={"api_token": token.get_secret_value()},
+        headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
 
@@ -218,10 +217,10 @@ def predict(
     payload = {
         "model_name": model_name,
         "input": inputs,
-        "api_token": token.get_secret_value(),
     }
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/inference/",
+        headers={"X-API-Key": token.get_secret_value()},
         json=payload,
         timeout=settings.API_TIMEOUT,
     )
@@ -268,11 +267,11 @@ def structure_prediction(
         headers={
             "accept": "application/json",
             "Content-Type": "application/json",
+            "X-API-Key": token.get_secret_value(),
         },
         json={
             "chains": chains,
             "model": model,
-            "api_token": token.get_secret_value(),
             "settings": constraint_settings,
         },
         timeout=settings.API_TIMEOUT,
@@ -290,9 +289,7 @@ def get_structure_prediction(task_id: str) -> Any:
         headers={
             "accept": "application/json",
             "Content-Type": "application/json",
-        },
-        json={
-            "api_token": token.get_secret_value(),
+            "X-API-Key": token.get_secret_value(),
         },
         timeout=settings.API_TIMEOUT,
     )
@@ -304,10 +301,9 @@ def get_structure_prediction(task_id: str) -> Any:
 def list_structure_tasks() -> Any:
     """List all structure prediction tasks."""
     token = load_token()
-    payload = {"api_token": token.get_secret_value()}
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/structure_prediction/get_all_tasks/",
-        json=payload,
+        headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
@@ -325,9 +321,7 @@ def download_structure_prediction(
         headers={
             "accept": "application/json",
             "Content-Type": "application/json",
-        },
-        json={
-            "api_token": token.get_secret_value(),
+            "X-API-Key": token.get_secret_value(),
         },
         timeout=settings.API_TIMEOUT,
     )
@@ -341,7 +335,7 @@ def model_metadata(model_id: str) -> Any:
     token = load_token()
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/models/metadata/{model_id}",
-        json={"api_token": token.get_secret_value()},
+        headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
@@ -354,7 +348,7 @@ def model_info(model_id: str) -> Any:
     token = load_token()
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/models/{model_id}",
-        json={"api_token": token.get_secret_value()},
+        headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
@@ -378,12 +372,8 @@ def upload_onnx_model(
 
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/onnx-model/upload/",
-        headers={
-            "X-API-Key": token.get_secret_value(),
-        },
-        files={
-            "file": file,
-        },
+        headers={"X-API-Key": token.get_secret_value()},
+        files={"file": file},
         timeout=settings.API_TIMEOUT,
     )
 
@@ -396,12 +386,11 @@ def create_batch_inference(model_id: str, file_path: str) -> Any:
     """Upload a file and start a batch inference job."""
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/batch-inference/{model_id}"
-    headers = {"X-API-Key": token.get_secret_value()}
     with open(file_path, "rb") as file_obj:
         files = create_upload_files(file_path, file_obj)
         response = httpx.post(
             url,
-            headers=headers,
+            headers={"X-API-Key": token.get_secret_value()},
             files={"file": files},
             timeout=settings.API_TIMEOUT,
         )

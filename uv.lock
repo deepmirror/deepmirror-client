@@ -373,6 +373,11 @@ dev = [
     { name = "types-tqdm" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
@@ -399,6 +404,9 @@ requires-dist = [
     { name = "types-tqdm", marker = "extra == 'dev'", specifier = "==4.67.0.20250516" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.3.5" }]
 
 [[package]]
 name = "dill"
