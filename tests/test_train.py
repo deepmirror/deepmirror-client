@@ -1,7 +1,7 @@
 """Test that the train functionality can correctly load data from a CSV file."""
 
 from pathlib import Path
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -10,10 +10,12 @@ from deepmirror import api
 
 @patch(
     "deepmirror.api.load_token",
-    new=MagicMock(return_value=Mock(get_secret_value=MagicMock(return_value="test_token")))
+    new=MagicMock(
+        return_value=Mock(get_secret_value=MagicMock(return_value="test_token"))
+    ),
 )
 @patch("deepmirror.api.httpx.post")
-def test_train_valid_columns(mock_post, csv_path: Path) -> None:  # pylint: disable=redefined-outer-name
+def test_train_valid_columns(mock_post: MagicMock, csv_path: Path) -> None:
     """Test training with valid columns."""
     csv_path.write_text("smiles,value\nCCO,1\n")
 
