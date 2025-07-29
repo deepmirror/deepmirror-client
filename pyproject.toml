@@ -1,6 +1,6 @@
 [project]
 name = "deepmirror"
-version = "0.0.7"
+version = "0.0.8"
 description = "Command line interface for the deepmirror public API"
 requires-python = ">=3.10"
 readme = "README.md"
@@ -67,3 +67,8 @@ warn_unused_ignores = true
 disallow_any_generics = true
 no_implicit_reexport = true
 disallow_untyped_defs = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
