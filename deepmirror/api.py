@@ -257,7 +257,7 @@ def predict(
 
 def structure_prediction(
     chains: list[dict[str, str]],
-    constraint_settings: dict[str, str | float | int] | None = None,
+    user_settings: dict[str, str | float | int] | None = None,
     model: StructureModel = StructureModel.CHAI,
 ) -> Any:
     """Create structure prediction"""
@@ -272,7 +272,7 @@ def structure_prediction(
         json={
             "chains": chains,
             "model": model,
-            "settings": constraint_settings,
+            "settings": user_settings,
         },
         timeout=settings.API_TIMEOUT,
     )
