@@ -20,7 +20,7 @@ dependencies = [
   "matplotlib>=3.10.3",              # PSF
   "tqdm>=4.67.1",                    # MPL-2.0
   "ipykernel>=6.29.5",               # BSD-3
-  "types-requests==2.32.4.20250611", # Apache-2.0
+  "types-requests==2.32.4.20250809", # Apache-2.0
   "py3Dmol>=2.5.0",                  # BSD-3
   "onnx>=1.18.0",                    # MIT License
   "rdkit==2025.3.5",                # BSD-3
