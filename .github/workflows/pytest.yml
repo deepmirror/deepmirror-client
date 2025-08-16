@@ -21,7 +21,7 @@ jobs:
       DM_CLIENT_EMAIL: ${{ secrets.DM_CLIENT_EMAIL }}
       DM_CLIENT_PASSWORD: ${{ secrets.DM_CLIENT_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install uv and set Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v6
         with:
