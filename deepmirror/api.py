@@ -104,11 +104,6 @@ def login(username: str, password: SecretStr) -> None:
     save_token(authenticate(username, password))
 
 
-def verify(token: SecretStr, code: SecretStr) -> None:
-    """Verify token using OTP code."""
-    save_token(verify_otp(token, code))
-
-
 def list_models() -> Any:
     """List all models."""
     token = load_token()
