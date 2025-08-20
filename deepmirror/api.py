@@ -73,10 +73,9 @@ def authenticate(username: str, password: SecretStr) -> SecretStr:
 
 
 def test_response_code(token: SecretStr) -> int:
-    """Check if the saved auth token is valid"""
-    url = f"{settings.HOST}/api/v3/public/test"
+    """Get response code for test API call"""
     response = httpx.post(
-        url,
+        f"{settings.HOST}/api/v3/public/test",
         headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
@@ -84,7 +83,7 @@ def test_response_code(token: SecretStr) -> int:
 
 
 def verify_otp(token: SecretStr, code: SecretStr) -> SecretStr:
-    """Authenticate with the deepmirror API."""
+    """Authenticate with the deepmirror API: OTP verification"""
     response = httpx.post(
         f"{settings.HOST}/api/v3/public/validate-otp-token",
         json=code.get_secret_value(),
