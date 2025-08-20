@@ -5,15 +5,7 @@ using the deepmirror API. It handles API token management and provides a clean
 interface for making API requests.
 """
 
-try:
-    from enum import StrEnum
-except ImportError:
-    from strenum import (
-        StrEnum as _StrEnum,  # added for python 3.10 compatibility
-    )
-
-    StrEnum = _StrEnum  # type: ignore[misc]
-
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -24,9 +16,14 @@ from pydantic import SecretStr
 from .config import settings
 from .utils import create_upload_files, download_stream
 
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from strenum import StrEnum
+
 
 class StructureModel(StrEnum):
-    """Avaialbe structure models"""
+    """Available structure models"""
 
     CHAI = "chai"
     BOLTZ = "boltz"
@@ -73,6 +70,32 @@ def authenticate(username: str, password: SecretStr) -> SecretStr:
     if token is None:
         raise RuntimeError("No API token returned")
     return SecretStr(token)
+
+
+def test_response_code(token: SecretStr) -> int:
+    """Get response code for test API call"""
+    response = httpx.post(
+        f"{settings.HOST}/api/v3/public/test",
+        headers={"X-API-Key": token.get_secret_value()},
+        timeout=settings.API_TIMEOUT,
+    )
+    return response.status_code
+
+
+def verify_otp(token: SecretStr, code: SecretStr) -> SecretStr:
+    """Authenticate with the deepmirror API: OTP verification"""
+    response = httpx.post(
+        f"{settings.HOST}/api/v3/public/validate-otp-token",
+        json=code.get_secret_value(),
+        headers={"X-API-Key": token.get_secret_value()},
+        timeout=settings.API_TIMEOUT,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(f"Login failed: {response.text}")
+    new_token = response.json().get("api_token")
+    if new_token is None:
+        raise RuntimeError("No API token returned")
+    return SecretStr(new_token)
 
 
 def login(username: str, password: SecretStr) -> None:

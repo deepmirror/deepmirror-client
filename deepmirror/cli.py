@@ -32,6 +32,12 @@ def login(username: str) -> None:
         raise click.ClickException(str(exc)) from exc
     if not token:
         raise click.ClickException("Login failed")
+    test_response = api.test_response_code(token)
+    if test_response == 403:
+        otp_code = getpass.getpass("OTP Code: ")
+        token = api.verify_otp(token, SecretStr(otp_code))
+    elif test_response != 200:
+        raise click.ClickException("API test failed")
     api.save_token(token)
 
 
