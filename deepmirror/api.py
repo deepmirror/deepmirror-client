@@ -6,8 +6,6 @@ interface for making API requests.
 """
 
 import sys
-
-
 from pathlib import Path
 from typing import Any
 

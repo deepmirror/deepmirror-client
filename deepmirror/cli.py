@@ -9,7 +9,7 @@ import getpass
 import json
 
 import click
-from pydantic import Secret, SecretStr
+from pydantic import SecretStr
 
 from . import api
 
