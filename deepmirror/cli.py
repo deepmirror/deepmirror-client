@@ -101,13 +101,13 @@ def train(
 
 @cli.command()
 @click.option("--model-name", required=True)
-@click.option("--input-file", type=click.Path(exists=True))
+@click.option("--csv-file", type=click.Path(exists=True))
 @click.option(
-    "--input-header",
+    "--smiles-column",
     default="smiles",
     help="Column name for SMILES in CSV input",
 )
-@click.option("--input-smiles", multiple=True, help="Direct SMILES input")
+@click.option("--smiles", multiple=True, help="Direct SMILES input")
 def predict(
     model_name: str,
     csv_file: str | None,
