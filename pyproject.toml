@@ -1,6 +1,6 @@
 [project]
 name = "deepmirror"
-version = "0.0.9"
+version = "0.0.10"
 description = "Command line interface for the deepmirror public API"
 requires-python = ">=3.10"
 readme = "README.md"
