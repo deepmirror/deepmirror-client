@@ -1,0 +1,79 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  test:
+    # Run the full test matrix before publishing
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.11', '3.12', '3.13']
+    runs-on: ${{ matrix.os }}
+    env:
+      DM_CLIENT_EMAIL: ${{ secrets.DM_CLIENT_EMAIL }}
+      DM_CLIENT_PASSWORD: ${{ secrets.DM_CLIENT_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv and set Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          activate-environment: true
+      - name: Sync dependencies
+        run: |
+          uv sync
+          uv pip install pytest
+      - name: Run tests
+        run: uv run pytest
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv and set Python
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.13'
+          activate-environment: true
+
+      - name: Set version from tag
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "Publishing version: $TAG"
+          sed -i "s/^version = \".*\"/version = \"$TAG\"/" pyproject.toml
+          grep '^version' pyproject.toml
+
+      - name: Build sdist and wheel
+        run: |
+          uv pip install build
+          python -m build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # required for OIDC trusted publishing
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
