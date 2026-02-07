@@ -5,6 +5,7 @@ using the deepmirror API. It handles API token management and provides a clean
 interface for making API requests.
 """
 
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,25 @@ from pydantic import SecretStr
 from .config import settings
 from .utils import create_upload_files, download_stream
 
+
+def _camel_to_snake(name: str) -> str:
+    """Convert a camelCase string to snake_case."""
+    s = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
+    s = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s)
+    return s.lower()
+
+
+def _normalize_response(data: Any) -> Any:
+    """Recursively convert camelCase keys in API responses to snake_case."""
+    if isinstance(data, dict):
+        return {
+            _camel_to_snake(k): _normalize_response(v) for k, v in data.items()
+        }
+    if isinstance(data, list):
+        return [_normalize_response(item) for item in data]
+    return data
+
+
 if sys.version_info >= (3, 11):
     from enum import StrEnum
 else:
@@ -26,8 +46,8 @@ class StructureModel(StrEnum):
     """Available structure models"""
 
     CHAI = "chai"
-    BOLTZ = "boltz"
     BOLTZ2 = "boltz2"
+    OPENFOLD3 = "openfold3"
 
 
 def save_token(token: SecretStr) -> None:
@@ -286,7 +306,7 @@ def structure_prediction(
     """Create structure prediction"""
     token = load_token()
     response = httpx.post(
-        f"{settings.HOST}/api/v3/public/structure-prediction/v2/",
+        f"{settings.HOST}/api/v3/public/structure-prediction/",
         headers={
             "accept": "application/json",
             "Content-Type": "application/json",
@@ -301,14 +321,14 @@ def structure_prediction(
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
-    return response.json()
+    return _normalize_response(response.json())
 
 
 def get_structure_prediction(task_id: str) -> Any:
     """Get structure prediction"""
     token = load_token()
     response = httpx.post(
-        f"{settings.HOST}/api/v3/public/structure_prediction/{task_id}",
+        f"{settings.HOST}/api/v3/public/structure-prediction/{task_id}",
         headers={
             "accept": "application/json",
             "Content-Type": "application/json",
@@ -318,20 +338,20 @@ def get_structure_prediction(task_id: str) -> Any:
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
-    return response.json()
+    return _normalize_response(response.json())
 
 
 def list_structure_tasks() -> Any:
     """List all structure prediction tasks."""
     token = load_token()
-    response = httpx.post(
-        f"{settings.HOST}/api/v3/public/structure_prediction/get_all_tasks/",
+    response = httpx.get(
+        f"{settings.HOST}/api/v3/public/structure-prediction/",
         headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
         raise RuntimeError(response.text)
-    return response.json()
+    return _normalize_response(response.json())
 
 
 def download_structure_prediction(
@@ -340,7 +360,7 @@ def download_structure_prediction(
     """Download a structure prediction task."""
     token = load_token()
     response = httpx.post(
-        f"{settings.HOST}/api/v3/public/structure_prediction/download/{task_id}",
+        f"{settings.HOST}/api/v3/public/structure-prediction/download/{task_id}",
         headers={
             "accept": "application/json",
             "Content-Type": "application/json",
