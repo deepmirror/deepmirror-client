@@ -72,6 +72,6 @@ disallow_untyped_defs = true
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
-    "pre-commit==4.5.1",
+    "pre-commit==4.6.0",
     "pylint>=4.0.4",
 ]
