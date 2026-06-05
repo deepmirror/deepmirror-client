@@ -23,7 +23,7 @@ dependencies = [
   "types-requests==2.32.4.20260107", # Apache-2.0
   "py3Dmol>=2.5.4",                  # BSD-3
   "onnx>=1.20.1",                    # MIT License
-  "rdkit==2025.9.4",                # BSD-3
+  "rdkit==2026.3.3",                # BSD-3
   "strenum>=0.4.15; python_version < '3.11'",
   "pyarrow==23.0.0",               # Apache-2.0
 ]
