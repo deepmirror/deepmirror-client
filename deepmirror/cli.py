@@ -33,7 +33,9 @@ def login(username: str) -> None:
     if not token:
         raise click.ClickException("Login failed")
     test_response = api.test_response_code(token)
-    if test_response == 403:
+    # A freshly issued token that is rejected means two-factor auth is
+    # pending. The API now signals this with 401; older deployments used 403.
+    if test_response in (401, 403):
         otp_code = getpass.getpass("OTP Code: ")
         token = api.verify_otp(token, SecretStr(otp_code))
     elif test_response != 200:
