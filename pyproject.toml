@@ -34,7 +34,7 @@ dev = [
   "pre-commit>=4.5.1",
   "pylint>=4.0.4",
   "ruff>=0.15.0",
-  "mypy==1.19.1",
+  "mypy==2.1.0",
   "types-tqdm==4.67.3.20260205",
   "pandas-stubs==3.0.0.260204",
 ]
