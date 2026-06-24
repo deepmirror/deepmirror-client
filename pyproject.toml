@@ -36,7 +36,7 @@ dev = [
   "ruff>=0.15.0",
   "mypy==2.1.0",
   "types-tqdm==4.67.3.20260205",
-  "pandas-stubs==3.0.0.260204",
+  "pandas-stubs==3.0.3.260530",
 ]
 
 [project.urls]
