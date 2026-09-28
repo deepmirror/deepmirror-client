@@ -150,10 +150,20 @@ def batch() -> None:
 @batch.command("create")
 @click.argument("model_id")
 @click.argument("file_path", type=click.Path(exists=True))
-def batch_create(model_id: str, file_path: str) -> None:
+@click.option(
+    "--model-version-id",
+    type=int,
+    default=None,
+    help="Pin a specific model version (defaults to the latest).",
+)
+def batch_create(
+    model_id: str, file_path: str, model_version_id: int | None
+) -> None:
     """Submit a Parquet file for batch inference."""
     try:
-        data = api.create_batch_inference(model_id, file_path)
+        data = api.create_batch_inference(
+            model_id, file_path, model_version_id=model_version_id
+        )
     except RuntimeError as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(json.dumps(data, indent=2))

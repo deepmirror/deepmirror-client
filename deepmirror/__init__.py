@@ -6,7 +6,6 @@ from .api import (
     download_batch_results,
     download_structure_prediction,
     get_batch_inference,
-    get_predict_hlm,
     get_structure_prediction,
     list_models,
     list_structure_tasks,
@@ -14,7 +13,6 @@ from .api import (
     model_info,
     model_metadata,
     predict,
-    predict_hlm,
     save_token,
     structure_prediction,
     train,
@@ -35,7 +33,5 @@ __all__ = [
     "train",
     "login",
     "model_metadata",
-    "predict_hlm",
-    "get_predict_hlm",
     "model_info",
 ]

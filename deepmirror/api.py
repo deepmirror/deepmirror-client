@@ -127,7 +127,7 @@ def list_models() -> Any:
     """List all models."""
     token = load_token()
     url = f"{settings.HOST}/api/v3/public/models/"
-    response = httpx.post(
+    response = httpx.get(
         url,
         headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
@@ -137,32 +137,14 @@ def list_models() -> Any:
     return response.json()
 
 
-def deregister_model(model_id: str) -> Any:
-    """Deregister a model."""
-    token = load_token()
-    url = f"{settings.HOST}/api/v3/public/models/deregister_model/"
-    response = httpx.post(
-        url,
-        headers={"X-API-Key": token.get_secret_value()},
-        json={"model_id": model_id},
-        timeout=settings.API_TIMEOUT,
-    )
-    if response.status_code != 200:
-        raise RuntimeError(response.text)
-    return response.json()
-
-
-def rename_model(model_id: str, model_name: str) -> Any:
+def rename_model(model_id: int | str, model_name: str) -> Any:
     """Rename a model."""
     token = load_token()
-    url = f"{settings.HOST}/api/v3/public/models/rename_model/"
-    response = httpx.post(
+    url = f"{settings.HOST}/api/v3/public/models/{model_id}/name"
+    response = httpx.put(
         url,
         headers={"X-API-Key": token.get_secret_value()},
-        json={
-            "model_id": model_id,
-            "model_name": model_name,
-        },
+        json=model_name,
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
@@ -197,40 +179,6 @@ def train(
         timeout=settings.API_TIMEOUT,
     )
     if response.status_code != 200:
-        raise RuntimeError(response.text)
-    return response.json()
-
-
-def predict_hlm(
-    smiles: list[str],
-) -> Any:
-    """Predict using HLM."""
-    token = load_token()
-    payload = {"x": smiles}
-
-    response = httpx.post(
-        f"{settings.HOST}/api/v3/public/predict-hlm/",
-        headers={"X-API-Key": token.get_secret_value()},
-        json=payload,
-        timeout=settings.API_TIMEOUT,
-    )
-    if response.status_code != 200:
-        raise RuntimeError(response.text)
-    return response.json()
-
-
-def get_predict_hlm(
-    task_id: str,
-) -> Any:
-    """Get predictions from HLM."""
-    token = load_token()
-    response = httpx.post(
-        f"{settings.HOST}/api/v3/public/predict-hlm/{task_id}",
-        headers={"X-API-Key": token.get_secret_value()},
-        timeout=settings.API_TIMEOUT,
-    )
-
-    if response.status_code not in [200, 202]:
         raise RuntimeError(response.text)
     return response.json()
 
@@ -373,11 +321,11 @@ def download_structure_prediction(
     return bytes(response.content)
 
 
-def model_metadata(model_id: str) -> Any:
+def model_metadata(model_id: int | str) -> Any:
     """Get metadata for a specific model."""
     token = load_token()
-    response = httpx.post(
-        f"{settings.HOST}/api/v3/public/models/metadata/{model_id}",
+    response = httpx.get(
+        f"{settings.HOST}/api/v3/public/models/{model_id}/metadata",
         headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
     )
@@ -386,10 +334,10 @@ def model_metadata(model_id: str) -> Any:
     return response.json()
 
 
-def model_info(model_id: str) -> Any:
+def model_info(model_id: int | str) -> Any:
     """Get detailed information for a specific model."""
     token = load_token()
-    response = httpx.post(
+    response = httpx.get(
         f"{settings.HOST}/api/v3/public/models/{model_id}",
         headers={"X-API-Key": token.get_secret_value()},
         timeout=settings.API_TIMEOUT,
@@ -425,15 +373,27 @@ def upload_onnx_model(
     return response.json()
 
 
-def create_batch_inference(model_id: str, file_path: str) -> Any:
-    """Upload a file and start a batch inference job."""
+def create_batch_inference(
+    model_id: int | str,
+    file_path: str,
+    model_version_id: int | None = None,
+) -> Any:
+    """Upload a file and start a batch inference job.
+
+    Optionally pin ``model_version_id`` to run against a specific version of
+    the model rather than its latest version.
+    """
     token = load_token()
-    url = f"{settings.HOST}/api/v3/public/batch-inference/{model_id}"
+    url = f"{settings.HOST}/api/v3/public/batch-inference/"
+    data: dict[str, str] = {"model_id": str(model_id)}
+    if model_version_id is not None:
+        data["model_version_id"] = str(model_version_id)
     with open(file_path, "rb") as file_obj:
         files = create_upload_files(file_path, file_obj)
         response = httpx.post(
             url,
             headers={"X-API-Key": token.get_secret_value()},
+            data=data,
             files={"file": files},
             timeout=settings.API_TIMEOUT,
         )
