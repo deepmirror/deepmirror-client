@@ -71,6 +71,13 @@ Upload a Parquet file for large-scale predictions:
 dm batch create MODEL_ID path/to/input.parquet
 ```
 
+By default the latest version of the model is used. Pass `--model-version-id`
+to pin a specific version:
+
+```bash
+dm batch create MODEL_ID path/to/input.parquet --model-version-id VERSION_ID
+```
+
 Check job status and download results once completed:
 
 ```bash
@@ -87,6 +94,8 @@ Explore co-folding capabilities using the following notebooks:
 - **[Apply constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)** during co-folding to guide the predicted structure [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Constrained_Predict_Structure.ipynb)
 
 - **[Estimate binding affinity values](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)** alongside structural prediction using Boltz-2 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Boltz2.ipynb)
+
+- **[Guide OpenFold3 with pocket constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/OpenFold3_Pocket_Constraints.ipynb)** by telling the model which residues line the binding site [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/OpenFold3_Pocket_Constraints.ipynb)
 
 - **[Apply Covalent Bond Constraints](https://github.com/deepmirror/deepmirror-client/blob/main/notebooks/Chai1_bond_constraints.ipynb)** to guide co-folding of covalent ligands in Chai-1 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deepmirror/deepmirror-client/blob/main/notebooks/Chai1_bond_constraints.ipynb)
 
