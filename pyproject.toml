@@ -20,12 +20,12 @@ dependencies = [
   "matplotlib>=3.10.8",              # PSF
   "tqdm>=4.67.3",                    # MPL-2.0
   "ipykernel>=7.2.0",                # BSD-3
-  "types-requests==2.32.4.20260107", # Apache-2.0
+  "types-requests==2.33.0.20261006", # Apache-2.0
   "py3Dmol>=2.5.4",                  # BSD-3
   "onnx>=1.20.1",                    # MIT License
-  "rdkit==2025.9.4",                # BSD-3
+  "rdkit==2026.9.1",                # BSD-3
   "strenum>=0.4.15; python_version < '3.11'",
-  "pyarrow==24.0.0",               # Apache-2.0
+  "pyarrow==26.0.0",               # Apache-2.0
 ]
 
 [project.optional-dependencies]
@@ -34,9 +34,9 @@ dev = [
   "pre-commit>=4.5.1",
   "pylint>=4.0.4",
   "ruff>=0.15.0",
-  "mypy==2.1.0",
-  "types-tqdm==4.67.3.20260205",
-  "pandas-stubs==3.0.0.260204",
+  "mypy==2.4.0",
+  "types-tqdm==4.70.0.20260906",
+  "pandas-stubs==3.0.5.260914",
 ]
 
 [project.urls]
@@ -72,6 +72,6 @@ disallow_untyped_defs = true
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
-    "pre-commit==4.5.1",
+    "pre-commit==4.7.0",
     "pylint>=4.0.4",
 ]
